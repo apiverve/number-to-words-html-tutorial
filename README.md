@@ -160,6 +160,14 @@ Explore more APIs at [APIVerve](https://apiverve.com/marketplace?utm_source=gith
 - [Roman Numeral Converter](https://apiverve.com/marketplace/romannumeralconverter?utm_source=github&utm_medium=tutorial&utm_campaign=number-to-words-html-tutorial) - Convert to Roman numerals
 - [Currency Converter](https://apiverve.com/marketplace/currencyconverter?utm_source=github&utm_medium=tutorial&utm_campaign=number-to-words-html-tutorial) - Convert currencies
 
+## Free Plan Note
+
+This tutorial works with the free APIVerve plan. Some APIs may have:
+- **Locked fields**: Premium response fields return `null` on free plans
+- **Ignored parameters**: Some optional parameters require a paid plan
+
+The API response includes a `premium` object when limitations apply. [Upgrade anytime](https://dashboard.apiverve.com/plans) to unlock all features.
+
 ## License
 
 MIT - see [LICENSE](LICENSE)
