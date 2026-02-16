@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number to Words Converter | APIVerve Tutorial</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #e0e0e0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+      color: #fff;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 35px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .input-section {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #a855f7;
+    }
+
+    input::placeholder {
+      color: #555;
+      font-weight: 400;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      margin-top: 15px;
+      background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+    }
+
+    button:disabled {
+      background: #444;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .examples {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    .example-btn {
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #aaa;
+      font-size: 0.9rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .example-btn:hover {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: #a855f7;
+      color: #a855f7;
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      padding-top: 25px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .result.show {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .words-display {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .words-label {
+      font-size: 0.8rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .words-text {
+      font-size: 1.4rem;
+      color: #fff;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .ordinal-display {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    .ordinal-label {
+      font-size: 0.75rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .ordinal-text {
+      color: #a855f7;
+      font-size: 1.1rem;
+      margin-top: 5px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .detail-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px 15px;
+      border-radius: 8px;
+      border-left: 3px solid #a855f7;
+    }
+
+    .detail-label {
+      font-size: 0.7rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .detail-value {
+      color: #ccc;
+      font-size: 0.95rem;
+      margin-top: 3px;
+    }
+
+    .decimal-section {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+    }
+
+    .decimal-title {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .decimal-words {
+      color: #a855f7;
+      font-size: 1rem;
+    }
+
+    .error {
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      color: #ff6b6b;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .api-key-notice {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      color: #ffc107;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .api-key-notice a {
+      color: #ffc107;
+      font-weight: 600;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: #a855f7;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Number to Words</h1>
+    <p class="subtitle">Convert any number to its written form</p>
+
+    <div class="card">
+      <div class="api-key-notice">
+        Add your API key in the script below. <a href="https://dashboard.apiverve.com" target="_blank">Get a free key</a>
+      </div>
+
+      <div class="input-section">
+        <label>Enter a number</label>
+        <input type="text" id="numberInput" placeholder="e.g., 12345.67">
+      </div>
+
+      <button id="convertBtn" onclick="convertNumber()">Convert to Words</button>
+
+      <div class="examples">
+        <button class="example-btn" onclick="setExample('42')">42</button>
+        <button class="example-btn" onclick="setExample('1000000')">1,000,000</button>
+        <button class="example-btn" onclick="setExample('3.14159')">3.14159</button>
+        <button class="example-btn" onclick="setExample('2025')">2025</button>
+      </div>
+
+      <div id="result" class="result"></div>
+    </div>
+
+    <p class="footer">
+      Powered by <a href="https://apiverve.com/marketplace/numbertowords" target="_blank">APIVerve Number to Words API</a>
+    </p>
+  </div>
+
+  <script>
+    // Add your API key here
+    const API_KEY = 'your-api-key-here';
+    const API_URL = 'https://api.apiverve.com/v1/numbertowords';
+
+    const input = document.getElementById('numberInput');
+    const resultDiv = document.getElementById('result');
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') convertNumber();
+    });
+
+    function setExample(num) {
+      input.value = num;
+      convertNumber();
+    }
+
+    async function convertNumber() {
+      const numberStr = input.value.trim().replace(/,/g, '');
+      if (!numberStr || isNaN(parseFloat(numberStr))) {
+        showError('Please enter a valid number');
+        return;
+      }
+
+      const btn = document.getElementById('convertBtn');
+      btn.disabled = true;
+      btn.textContent = 'Converting...';
+
+      try {
+        const response = await fetch(`${API_URL}?number=${encodeURIComponent(numberStr)}`, {
+          method: 'GET',
+          headers: {
+            'x-api-key': API_KEY
+          }
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'ok') {
+          displayResult(result.data);
+        } else {
+          showError(result.error || 'Conversion failed');
+        }
+      } catch (error) {
+        showError('Failed to connect to API. Check your API key.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Convert to Words';
+      }
+    }
+
+    function displayResult(data) {
+      let html = `
+        <div class="words-display">
+          <div class="words-label">In Words</div>
+          <div class="words-text">${capitalizeFirst(data.words)}</div>
+        </div>
+
+        <div class="ordinal-display">
+          <div class="ordinal-label">Ordinal Form</div>
+          <div class="ordinal-text">${capitalizeFirst(data.ordinal)}</div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <div class="detail-label">Original Number</div>
+            <div class="detail-value">${data.number}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Digits</div>
+            <div class="detail-value">${data.numberOfDigits_numeric} (${data.numberOfDigits_words})</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Each Digit</div>
+            <div class="detail-value">${data.eachNumber.join(', ')}</div>
+          </div>
+          <div class="detail-item">
+            <div class="detail-label">Locale</div>
+            <div class="detail-value">${data.locale}</div>
+          </div>
+        </div>
+      `;
+
+      if (data.afterDecimal && data.afterDecimal.words) {
+        html += `
+          <div class="decimal-section">
+            <div class="decimal-title">After Decimal Point</div>
+            <div class="decimal-words">${data.afterDecimal.words.join(' ')}</div>
+          </div>
+        `;
+      }
+
+      resultDiv.innerHTML = html;
+      resultDiv.classList.add('show');
+    }
+
+    function capitalizeFirst(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function showError(message) {
+      resultDiv.innerHTML = `<div class="error">${message}</div>`;
+      resultDiv.classList.add('show');
+    }
+  </script>
+</body>
+</html>
