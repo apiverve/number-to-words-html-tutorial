@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Number to Words Converter | APIVerve Tutorial</title>
+  <title>Number to Words Converter</title>
   <style>
     * {
       box-sizing: border-box;
@@ -114,6 +114,8 @@
     }
 
     .example-btn {
+      width: auto;
+      margin-top: 0;
       padding: 8px 16px;
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -244,22 +246,6 @@
       text-align: center;
     }
 
-    .api-key-notice {
-      background: rgba(255, 193, 7, 0.1);
-      border: 1px solid rgba(255, 193, 7, 0.3);
-      color: #ffc107;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-
-    .api-key-notice a {
-      color: #ffc107;
-      font-weight: 600;
-    }
-
     .footer {
       text-align: center;
       margin-top: 30px;
@@ -279,13 +265,9 @@
     <p class="subtitle">Convert any number to its written form</p>
 
     <div class="card">
-      <div class="api-key-notice">
-        Add your API key in the script below. <a href="https://dashboard.apiverve.com" target="_blank">Get a free key</a>
-      </div>
-
       <div class="input-section">
         <label>Enter a number</label>
-        <input type="text" id="numberInput" placeholder="e.g., 12345.67">
+        <input type="text" id="numberInput" placeholder="e.g., 12345.67" inputmode="decimal" maxlength="24">
       </div>
 
       <button id="convertBtn" onclick="convertNumber()">Convert to Words</button>
@@ -301,14 +283,13 @@
     </div>
 
     <p class="footer">
-      Powered by <a href="https://apiverve.com/marketplace/numbertowords" target="_blank">APIVerve Number to Words API</a>
+      Powered by <a href="https://apiverve.com/marketplace/numbertowords?utm_source=github&amp;utm_medium=template&amp;utm_campaign=number-to-words-html-tutorial" target="_blank" rel="noopener noreferrer">APIVerve Number to Words API</a>
     </p>
   </div>
 
   <script>
-    // Add your API key here
-    const API_KEY = 'your-api-key-here';
-    const API_URL = 'https://api.apiverve.com/v1/numbertowords';
+    // The page calls /api/words (api/words.js), which holds your API key and calls
+    // the Number to Words API: https://apiverve.com/marketplace/numbertowords
 
     const input = document.getElementById('numberInput');
     const resultDiv = document.getElementById('result');
@@ -334,22 +315,16 @@
       btn.textContent = 'Converting...';
 
       try {
-        const response = await fetch(`${API_URL}?number=${encodeURIComponent(numberStr)}`, {
-          method: 'GET',
-          headers: {
-            'x-api-key': API_KEY
-          }
-        });
-
+        const response = await fetch(`/api/words?number=${encodeURIComponent(numberStr)}`);
         const result = await response.json();
 
-        if (result.status === 'ok') {
-          displayResult(result.data);
+        if (response.ok) {
+          displayResult(result);
         } else {
           showError(result.error || 'Conversion failed');
         }
       } catch (error) {
-        showError('Failed to connect to API. Check your API key.');
+        showError('Couldn’t reach the server. Try again.');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Convert to Words';
